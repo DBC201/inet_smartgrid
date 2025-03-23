@@ -65,6 +65,7 @@ class INET_API Protocol
     static const Protocol ethernetMac;
     static const Protocol ethernetPhy;
     static const Protocol ftp;
+    static const Protocol goose;
     static const Protocol gpsr;
     static const Protocol gptp;
     static const Protocol http;
@@ -102,6 +103,7 @@ class INET_API Protocol
     static const Protocol ospf;
     static const Protocol pim;
     static const Protocol ppp;
+    static const Protocol ptpv2;
     static const Protocol rip;
     static const Protocol rsvpTe;
     static const Protocol rtsp;
@@ -109,6 +111,7 @@ class INET_API Protocol
     static const Protocol srp;
     static const Protocol ssh;
     static const Protocol stp;
+    static const Protocol sv;
     static const Protocol tcp;
     static const Protocol telnet;
     static const Protocol trill;
