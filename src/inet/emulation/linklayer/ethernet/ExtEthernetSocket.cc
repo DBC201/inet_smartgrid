@@ -25,6 +25,7 @@
 #include "inet/emulation/linklayer/ethernet/ExtEthernetSocket.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"
 #include "inet/networklayer/common/NetworkInterface.h"
+#include "inet/common/TimeTag_m.h"
 
 namespace inet {
 
@@ -71,11 +72,57 @@ void ExtEthernetSocket::handleMessage(cMessage *message)
     size_t packetLength = bytesChunk->copyToBuffer(buffer, sizeof(buffer));
     ASSERT(packetLength == (size_t)packet->getByteLength());
 
-    int sent = sendto(fd, buffer, packetLength, 0, (struct sockaddr *)&socket_address, sizeof(socket_address));
+    std::string packet_name(packet->getName());
+
+    int sent;
+
+    if (packet_name.substr(0,3) == "Ext" || packet_name.substr(0,3) == "Rep") {
+        int start_index = packetLength - 12;
+        int64_t start_time_raw = 0x00;
+        for (int i=0; i<8; i++) {
+            start_time_raw |= static_cast<int64_t>(buffer[start_index+i]) << (8*(7-i));
+        }
+
+        memcpy(&buffer[start_index], &buffer[packetLength-4], 4);
+
+        packetLength -= 8;
+
+        if (buffer[12] == 0x88 && buffer[13] == 0xba && false) {
+            // to simulate trunk if necessary
+            uint8_t new_buffer[packetLength+4];
+            memcpy(&new_buffer, buffer, 12);
+            new_buffer[12] = 0x81;
+            new_buffer[13] = 0x00;
+            new_buffer[14] = 0xe0;
+            new_buffer[15] = 0x64;
+            new_buffer[16] = 0x88;
+            new_buffer[17] = 0xba;
+            memcpy(&new_buffer[18], &buffer[14], packetLength-14);
+            sent = sendto(fd, new_buffer, packetLength, 0, (struct sockaddr *)&socket_address, sizeof(socket_address));
+        }
+        else {
+            sent = sendto(fd, buffer, packetLength, 0, (struct sockaddr *)&socket_address, sizeof(socket_address));
+        }
+
+//        sent = sendto(fd, buffer, packetLength, 0, (struct sockaddr *)&socket_address, sizeof(socket_address));
+
+//        packetLength -= 12;
+
+
+//        simtime_t duration = simTime() - bytesChunk->getTag<CreationTimeTag>()->getCreationTime();
+        simtime_t duration = simTime() - SimTime::fromRaw(start_time_raw);
+
+        std::cout << packet_name.substr(0,3) << " " << simTime() << " " << duration << std::endl;
+    }
+    else {
+        sent = sendto(fd, buffer, packetLength, 0, (struct sockaddr *)&socket_address, sizeof(socket_address));
+    }
+
     if ((size_t)sent == packetLength)
         EV_INFO << "Sent " << packetLength << " packet to '" << device << "' device.\n";
     else
         EV_WARN << "Sending packet FAILED! (sendto returned " << sent << " B (" << strerror(errno) << ") instead of " << packetLength << ").\n";
+
     emit(packetSentSignal, packet);
 
     numSent++;
@@ -154,11 +201,29 @@ bool ExtEthernetSocket::notify(int fd)
     int n = ::recv(fd, (char *)buffer, sizeof(buffer), 0);
     if (n < 0)
         throw cRuntimeError("Calling recvfrom failed: %d", n);
+
+    struct ethhdr *eth = (struct ethhdr*) buffer;
+
+    if (ntohs(eth->h_proto) != 0x88b8
+            && ntohs(eth->h_proto) != 0x88ba && ntohs(eth->h_proto) != 0x88f7
+            && ntohs(eth->h_proto) != 0x8100 ) {
+        return false;
+    }
+
+    // not a pretty solution, but tags get removed by intermediary nodes
+    int64_t start_time_raw = simTime().raw();
+    for (int i=0; i<8; i++) {
+        buffer[n+i] = static_cast<unsigned char>((start_time_raw >> (64 - (8*(i+1)))) & 0xFF);
+    }
+    n += 8;
+
     n = std::max(n, ETHER_MIN_LEN - 4);
     uint32_t checksum = htonl(ethernetCRC(buffer, n));
     memcpy(&buffer[n], &checksum, sizeof(checksum));
     auto data = makeShared<BytesChunk>(static_cast<const uint8_t *>(buffer), n + 4);
+//    data->addTag<CreationTimeTag>()->setCreationTime(simTime());
     auto packet = new Packet(nullptr, data);
+
     auto networkInterface = check_and_cast<NetworkInterface *>(getContainingNicModule(this));
     packet->addTag<InterfaceInd>()->setInterfaceId(networkInterface->getInterfaceId());
     packet->addTag<PacketProtocolTag>()->setProtocol(&Protocol::ethernetMac);
@@ -175,4 +240,3 @@ bool ExtEthernetSocket::notify(int fd)
 } // namespace inet
 
 #endif // __linux__
-
