@@ -3,6 +3,11 @@
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 //
+// Modifications by Deniz Cakiroglu on Apr 8, 2025
+// 
+// - Added delay measurement by timestamp appending/extracting and trunk simulation'
+// Changes can be seen in this commit: https://github.com/DBC201/inet_smartgrid/commit/9fdbe05f3f602b8e29e7ff87ac30c815bb20f482
+//
 
 
 #include <omnetpp/platdep/sockets.h>

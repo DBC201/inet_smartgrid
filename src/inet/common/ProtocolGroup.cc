@@ -3,7 +3,11 @@
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 //
-
+// Modifications by Deniz Cakiroglu on Apr 8, 2025
+// 
+// - Added goose, sv, ptpv2 definitions under etherType protocols
+// Changes can be seen in this commit: https://github.com/DBC201/inet_smartgrid/commit/f51413969c9b804d31eeb5c31e91db6a4acd599d
+//
 
 #include "inet/common/ProtocolGroup.h"
 

@@ -3,6 +3,11 @@
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 //
+// Modifications by Deniz Cakiroglu on Apr 8, 2025
+// 
+// - Added goose, sv, ptpv2 definitions under standard protocol identifiers
+// Changes can be seen in this commit: https://github.com/DBC201/inet_smartgrid/commit/f51413969c9b804d31eeb5c31e91db6a4acd599d
+//
 
 
 #ifndef __INET_PROTOCOL_H
