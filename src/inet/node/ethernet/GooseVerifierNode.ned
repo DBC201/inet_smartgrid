@@ -1,0 +1,61 @@
+package inet.node.ethernet;
+
+import inet.linklayer.contract.IEthernetInterface;
+import inet.networklayer.common.InterfaceTable;
+
+import inet.queueing.sink.PassivePacketSink;
+
+import inet.applications.contract.IVerifierApp;
+
+module GooseVerifierNode
+{
+    parameters:
+        @networkNode();
+        @labels(node,ethernet-node);
+        @display("i=device/switch;bgb=509,466");
+        *.interfaceTableModule = default(absPath(".interfaceTable"));
+    gates:
+        inout ethgUnverified1 @labels(EtherFrame-conn);
+        inout ethgUnverified2 @labels(EtherFrame-conn);
+
+        inout ethgVerified @labels(EtherFrame-conn);
+    submodules:
+        interfaceTable: InterfaceTable {
+            parameters:
+                @display("p=66,63;is=s");
+        }
+        ethUnverified1: <default("EthernetInterface")> like IEthernetInterface {
+            parameters:
+                @display("p=86,143,row,150;q=txQueue");
+        }
+        ethUnverified2: <default("EthernetInterface")> like IEthernetInterface {
+            parameters:
+                @display("p=86,249,row,150;q=txQueue");
+        }
+        ethVerified: <default("EthernetInterface")> like IEthernetInterface {
+            parameters:
+                @display("p=402,249,row,150;q=txQueue");
+        }
+        gooseVerifierApp: <default("GooseVerifierApp")> like IVerifierApp {
+            @display("p=234,221");
+        }
+        dropper: PassivePacketSink {
+            @display("p=420,143");
+        }
+    connections allowunconnected:
+        ethUnverified1.phys <--> { @display("m=s"); } <--> ethgUnverified1;
+        ethUnverified2.phys <--> { @display("m=s"); } <--> ethgUnverified2;
+
+        gooseVerifierApp.unverifiedIn1 <-- ethUnverified1.upperLayerOut;
+        gooseVerifierApp.unverifiedOut1 --> ethUnverified1.upperLayerIn;
+
+        gooseVerifierApp.unverifiedIn2 <-- ethUnverified2.upperLayerOut;
+        gooseVerifierApp.unverifiedOut2 --> ethUnverified2.upperLayerIn;
+
+        gooseVerifierApp.dropper --> dropper.in;
+
+        gooseVerifierApp.verifiedOut --> ethVerified.upperLayerIn;
+        gooseVerifierApp.verifiedIn <-- ethVerified.upperLayerOut;
+
+        ethVerified.phys <--> { @display("m=s"); } <--> ethgVerified;
+}
