@@ -13,6 +13,7 @@ import inet.queueing.contract.IPacketScheduler;
 import inet.queueing.filter.RedDropper;
 import inet.queueing.queue.CompoundPacketQueueBase;
 import inet.queueing.queue.DropTailQueue;
+import inet.queueing.sink.PassivePacketSink;
 
 //
 // Queue module that gives the PAUSE frames a higher priority.
@@ -100,3 +101,18 @@ module EthernetQosRedQueue extends CompoundPacketQueueBase like IPacketQueue
         redFilter.out --> dataQueue.in;
 }
 
+module EthernetGooseQueue extends CompoundPacketQueueBase like IPacketQueue
+{
+    @display("bgb=348.97498,246.67499");
+    submodules:
+        classifier: EthernetGooseClassifier {ue");
+        }
+        dropper: PassivePacketSink {
+            @display("p=224.4,160.875");
+        }
+    connections allowunconnected:
+        in --> classifier.in;
+        classifier.out++ --> dropper.in;
+        classifier.out++ --> queue.in;
+        queue.out --> out;
+}
