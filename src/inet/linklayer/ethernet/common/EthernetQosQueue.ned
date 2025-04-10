@@ -3,6 +3,12 @@
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 //
+// Modifications by Deniz Cakiroglu on Apr 9, 2025
+// 
+// - Added EthernetGooseQueue module
+// Changes can be seen in: https://github.com/DBC201/inet_smartgrid/commit/6a1498400414ef1ced42d532f785d0464aa79c7a
+// and https://github.com/DBC201/inet_smartgrid/commit/9bade6df398ebccee6bdc468ea1f480a1bf1a863
+//
 
 
 package inet.linklayer.ethernet.common;
