@@ -105,7 +105,12 @@ module EthernetGooseQueue extends CompoundPacketQueueBase like IPacketQueue
 {
     @display("bgb=348.97498,246.67499");
     submodules:
-        classifier: EthernetGooseClassifier {ue");
+        classifier: EthernetGooseClassifier {
+            @display("p=53.625,128.7");
+        }
+        queue: <default("DropTailQueue")> like IPacketQueue {
+            parameters:
+                @display("p=270,76;q=l2queue");
         }
         dropper: PassivePacketSink {
             @display("p=224.4,160.875");
