@@ -7,7 +7,7 @@ import inet.queueing.sink.PassivePacketSink;
 
 import inet.applications.contract.IVerifierApp;
 
-module GooseVerifierNode
+module DualVerifierNode
 {
     parameters:
         @networkNode();
@@ -36,7 +36,7 @@ module GooseVerifierNode
             parameters:
                 @display("p=402,249,row,150;q=txQueue");
         }
-        gooseVerifierApp: <default("GooseVerifierApp")> like IVerifierApp {
+        dualVerifierApp: <default("")> like IVerifierApp {
             @display("p=234,221");
         }
         dropper: PassivePacketSink {
@@ -46,16 +46,16 @@ module GooseVerifierNode
         ethUnverified1.phys <--> { @display("m=s"); } <--> ethgUnverified1;
         ethUnverified2.phys <--> { @display("m=s"); } <--> ethgUnverified2;
 
-        gooseVerifierApp.unverifiedIn1 <-- ethUnverified1.upperLayerOut;
-        gooseVerifierApp.unverifiedOut1 --> ethUnverified1.upperLayerIn;
+        dualVerifierApp.unverifiedIn1 <-- ethUnverified1.upperLayerOut;
+        dualVerifierApp.unverifiedOut1 --> ethUnverified1.upperLayerIn;
 
-        gooseVerifierApp.unverifiedIn2 <-- ethUnverified2.upperLayerOut;
-        gooseVerifierApp.unverifiedOut2 --> ethUnverified2.upperLayerIn;
+        dualVerifierApp.unverifiedIn2 <-- ethUnverified2.upperLayerOut;
+        dualVerifierApp.unverifiedOut2 --> ethUnverified2.upperLayerIn;
 
-        gooseVerifierApp.dropper --> dropper.in;
+        dualVerifierApp.dropper --> dropper.in;
 
-        gooseVerifierApp.verifiedOut --> ethVerified.upperLayerIn;
-        gooseVerifierApp.verifiedIn <-- ethVerified.upperLayerOut;
+        dualVerifierApp.verifiedOut --> ethVerified.upperLayerIn;
+        dualVerifierApp.verifiedIn <-- ethVerified.upperLayerOut;
 
         ethVerified.phys <--> { @display("m=s"); } <--> ethgVerified;
 }
