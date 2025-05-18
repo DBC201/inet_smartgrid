@@ -65,7 +65,11 @@ void SvAttackerApp::handleMessageWhenUp(cMessage* message) {
         return;
     }
 
-    manipulate(&buffer[64]);
+    int currSmpCnt = get_num(&buffer[51], 2);
+    currSmpCnt += 10;
+    set_num(&buffer[51], currSmpCnt, 2);
+
+    manipulate(&buffer[70]);
 
     Ptr<BytesChunk> chunkPtr = makeShared<BytesChunk>(buffer, bufferSize);
     auto new_packet = new Packet(name.c_str(), chunkPtr);
