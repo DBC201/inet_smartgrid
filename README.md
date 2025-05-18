@@ -15,6 +15,7 @@ Following changes were made:
 - A SV FDI Attacker is implemented to be used with the CustomIOSwitch: [c2395ba](https://github.com/DBC201/inet_smartgrid/commit/c2395baace25663f3e3f032a88fc2b11cfc4bf77), based on [Hong et. al. 2022](https://ieeexplore.ieee.org/document/9361308)
 - A simple one way forwarder is implemented to be used with DualVerifierApp: [341aab1](https://github.com/DBC201/inet_smartgrid/commit/341aab188b5fd1caf35826932f5af64c5e51fb1f)
 - A SimpleSvVerifierApp that orders packet traffic by strictly incrementing smpCnt values is implemented: [a466dc6](https://github.com/DBC201/inet_smartgrid/commit/a466dc61c2b44dfd81143f4793ff7ce6cc4cd772)
+- A SvVerifierHashmapApp that uses a hash map to store the packets and check for duplicates is implemented: [cf25119](https://github.com/DBC201/inet_smartgrid/commit/cf25119ea70b2b9a856a04f11d661c5174f583c1). xxhash is used for hashing. It can be found at: https://github.com/Cyan4973/xxHash
 
 ---Below is the continuation to the original readme.---
 
