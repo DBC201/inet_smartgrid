@@ -13,7 +13,7 @@ Following changes were made:
 - A Goose Semantic Attacker is implemented to be used with the CustomIOSwitch: [13e5789](https://github.com/DBC201/inet_smartgrid/commit/13e5789ae40213e6b9a35865ce84b10b25c44a1a), based on [Hoyos et. al. 2012](https://ieeexplore.ieee.org/document/6477809)
 - A verifier that detects attacks using multiple channels were added: [5a9824c](https://github.com/DBC201/inet_smartgrid/commit/5a9824c0996488ab286bd60357f201da0f7a947a), [4a17b14](https://github.com/DBC201/inet_smartgrid/commit/4a17b14a575947c5ba69c8c9b340fddd48d5fa7b), [283bfd3](https://github.com/DBC201/inet_smartgrid/commit/283bfd32c9939c4d4838242275e85e2fca8c05a9). [4a17b14](https://github.com/DBC201/inet_smartgrid/commit/4a17b14a575947c5ba69c8c9b340fddd48d5fa7b) requires linking with the crypto library. The crypto library can be found at: https://www.openssl.org
 - A SV FDI Attacker is implemented to be used with the CustomIOSwitch: [c2395ba](https://github.com/DBC201/inet_smartgrid/commit/c2395baace25663f3e3f032a88fc2b11cfc4bf77), based on [Hong et. al. 2022](https://ieeexplore.ieee.org/document/9361308)
-- A simple one way forwarder is implemented to be used with CustomIOSwitch: [341aab1](https://github.com/DBC201/inet_smartgrid/commit/341aab188b5fd1caf35826932f5af64c5e51fb1f)
+- A simple one way forwarder is implemented to be used with DualVerifierApp: [341aab1](https://github.com/DBC201/inet_smartgrid/commit/341aab188b5fd1caf35826932f5af64c5e51fb1f)
 
 ---Below is the continuation to the original readme.---
 
