@@ -8,7 +8,7 @@
 
 #include "inet/common/ProtocolTag_m.h"
 
-#include "inet/linklayer/iec61850/iec_byte_utils.h"
+#include "inet/linklayer/iec61850/SvPduParser.h"
 
 #include <iomanip>      // For std::setw and std::setfill
 
@@ -55,7 +55,18 @@ void SimpleSvVerifierApp::handleMessageWhenUp(cMessage* message) {
         return;
     }
 
-    int currSmpCnt = get_num(&bytes[51], 2);
+    int header_length = ETH_HLEN;
+
+    if (ntohs(eth->h_proto) == 0x8100) {
+        header_length += 4;
+    }
+
+
+    SvPduParser* svPduParser = new SvPduParser(bytes.data() + header_length);
+
+    int currSmpCnt = svPduParser->get_smpCnt();
+
+    delete svPduParser;
 
     bool range_valid = currSmpCnt < 4000 && currSmpCnt >= 0;
     bool increment_valid = currSmpCnt == smpCnt + 1 || (smpCnt == 3999 && currSmpCnt == 0);

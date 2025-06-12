@@ -8,7 +8,7 @@
 
 #include "inet/common/ProtocolTag_m.h"
 
-#include "inet/linklayer/iec61850/iec_byte_utils.h"
+#include "inet/linklayer/iec61850/SvPduParser.h"
 
 #include <iomanip>      // For std::setw and std::setfill
 
@@ -27,12 +27,6 @@ void SvAttackerApp::handleStopOperation(LifecycleOperation *operation) {
 }
 
 void SvAttackerApp::handleCrashOperation(LifecycleOperation *operation) {
-}
-
-void SvAttackerApp::manipulate(unsigned char* byteArray) {
-    float f = get_float(byteArray, 4);
-    f *= 10;
-    set_float(byteArray, f, 4);
 }
 
 void SvAttackerApp::handleMessageWhenUp(cMessage* message) {
@@ -65,11 +59,21 @@ void SvAttackerApp::handleMessageWhenUp(cMessage* message) {
         return;
     }
 
-    int currSmpCnt = get_num(&buffer[51], 2);
-    currSmpCnt += 10;
-    set_num(&buffer[51], currSmpCnt, 2);
+    int header_length = ETH_HLEN;
 
-    manipulate(&buffer[70]);
+    if (ntohs(eth->h_proto) == 0x8100) {
+        header_length += 4;
+    }
+
+    SvPduParser* svPduParser = new SvPduParser(buffer + header_length);
+
+    int currSmpCnt = svPduParser->get_smpCnt();
+    currSmpCnt += 10;
+    svPduParser->set_smpCnt(currSmpCnt);
+
+    svPduParser->modifyseqData();
+
+    delete svPduParser;
 
     Ptr<BytesChunk> chunkPtr = makeShared<BytesChunk>(buffer, bufferSize);
     auto new_packet = new Packet(name.c_str(), chunkPtr);
