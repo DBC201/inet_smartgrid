@@ -16,6 +16,7 @@ Following changes were made:
 - A simple one way forwarder is implemented to be used with DualVerifierApp: [341aab1](https://github.com/DBC201/inet_smartgrid/commit/341aab188b5fd1caf35826932f5af64c5e51fb1f)
 - A SimpleSvVerifierApp that orders packet traffic by strictly incrementing smpCnt values is implemented: [a466dc6](https://github.com/DBC201/inet_smartgrid/commit/a466dc61c2b44dfd81143f4793ff7ce6cc4cd772)
 - A SvVerifierHashmapApp that uses a hash map to store the packets and check for duplicates is implemented: [cf25119](https://github.com/DBC201/inet_smartgrid/commit/cf25119ea70b2b9a856a04f11d661c5174f583c1). xxhash is used for hashing. It can be found at: https://github.com/Cyan4973/xxHash
+- A SvPduParser is added to parse the SV PDU and extract the fields such as smpCnt value: [d7e2cdb](https://github.com/DBC201/inet_smartgrid/commit/d7e2cdbe0e57a1883c1f2c1f62fc950899582b51)
 
 ---Below is the continuation to the original readme.---
 
